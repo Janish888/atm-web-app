@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{% block title %}ATM Application{% endblock %}</title>
+    <style>
+        /* ===== Body & Container ===== */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            background-color: #f4f4f4;
+        }
+
+        .container {
+            max-width: 500px;
+            margin: 50px auto;
+            padding: 20px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        /* ===== Inputs & Buttons ===== */
+        input[type="text"], input[type="password"], input[type="number"] {
+            width: 100%;
+            padding: 10px;
+            margin: 8px 0;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            box-sizing: border-box;
+        }
+
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background-color: #2980b9;
+        }
+
+        /* ===== Messages ===== */
+        .message {
+            padding: 10px;
+            margin-bottom: 15px;
+            border-radius: 5px;
+            color: white;
+            font-weight: bold;
+        }
+
+        .message-success { background-color: #2ecc71; }  /* Green */
+        .message-error { background-color: #e74c3c; }    /* Red */
+
+        /* ===== Navbar ===== */
+        nav {
+            background-color: #3498db;
+            padding: 10px;
+            text-align: center;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            padding: 8px 12px;
+            border-radius: 5px;
+            margin: 0 5px;
+            font-weight: bold;
+        }
+
+        nav a:hover {
+            background-color: #2980b9;
+        }
+
+        /* ===== Links inside container ===== */
+        a {
+            text-decoration: none;
+            color: #3498db;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+
+<!-- ===== Navbar ===== -->
+<nav>
+    <a href="{% url 'dashboard' %}">🏠 Dashboard</a>
+    <a href="{% url 'deposit' %}">Deposit</a>
+    <a href="{% url 'withdraw' %}">Withdraw</a>
+    <a href="{% url 'transactions' %}">Transactions</a>
+    <a href="{% url 'check_balance' %}">Check Balance</a>
+    <a href="{% url 'logout' %}">Logout</a>
+</nav>
+
+<!-- ===== Main Content Container ===== -->
+<div class="container">
+
+    <!-- Messages -->
+    {% if messages %}
+        {% for message in messages %}
+            <div class="message {% if message.tags %}message-{{ message.tags }}{% endif %}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <!-- Page Content -->
+    {% block content %}{% endblock %}
+
+</div>
+
+</body>
+</html>
+
+
+

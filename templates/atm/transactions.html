@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block title %}Transaction History{% endblock %}
+
+{% block content %}
+<h2>Transaction History</h2>
+
+{% if transactions %}
+<table border="1" width="100%" cellpadding="5" cellspacing="0">
+    <tr>
+        <th>Type</th>
+        <th>Amount (₹)</th>
+        <th>Date & Time</th>
+    </tr>
+    {% for t in transactions %}
+    <tr>
+        <td>{{ t.transaction_type }}</td>
+        <td>{{ t.amount }}</td>
+        <td>{{ t.timestamp }}</td>
+    </tr>
+    {% endfor %}
+</table>
+{% else %}
+<p>No transactions yet.</p>
+{% endif %}
+{% endblock %}
+
+

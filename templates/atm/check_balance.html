@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block title %}Check Balance{% endblock %}
+
+{% block content %}
+<h2>Check Balance</h2>
+
+<p>Hello, <strong>{{ request.user.username }}</strong>! Here is your current balance:</p>
+
+<p style="font-size: 1.5em; font-weight: bold;">₹ {{ account.balance }}</p>
+
+{% endblock %}
+
+
+

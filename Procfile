@@ -1,2 +1,2 @@
 web: gunicorn atm_project.wsgi
-web: gunicorn atm_project.wsgi --bind 8.0.8.0:$PORT
+web: gunicorn atm_project.wsgi --bind 0.0.0.0:$PORT

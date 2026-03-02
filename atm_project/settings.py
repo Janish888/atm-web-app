@@ -31,7 +31,7 @@ SECRET_KEY = os.getenv("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv("DEBUG") == "True"
 
-ALLOWED_HOSTS = ['atm-web-app.up.railway.app',
+ALLOWED_HOSTS = ['atm-web-app-production.up.railway.app',
     'localhost',
     '127.0.0.1']
 

@@ -107,7 +107,6 @@ def register_view(request):
 
 
         user = User.objects.create_user(username=username, password=password)
-        Account.objects.create(user=user)
         messages.success(request, "Account created successfully! Please login.")
         return redirect('login')
 

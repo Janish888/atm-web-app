@@ -1,12 +1,13 @@
-from django.shortcuts import render
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.contrib import messages
+from django.contrib.auth.password_validation import validate_password
+from django.core.exceptions import ValidationError
 from .models import Account, Transaction
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
-from decimal import Decimal
+from decimal import Decimal, InvalidOperation
 
 
 @login_required
@@ -16,10 +17,12 @@ def dashboard(request):
         'account': account
     })
 
+
 @login_required
 def check_balance(request):
+    account, _ = Account.objects.get_or_create(user=request.user)
     return render(request, 'atm/check_balance.html', {
-        'account': request.user.account
+        'account': account
     })
 
 
@@ -28,7 +31,11 @@ def deposit_view(request):
     account, _ = Account.objects.get_or_create(user=request.user)
 
     if request.method == 'POST':
-        amount = Decimal(request.POST.get('amount'))
+        try:
+            amount = Decimal(request.POST.get('amount'))
+        except (InvalidOperation, TypeError):
+            messages.error(request, "Invalid amount.")
+            return render(request, 'atm/deposit.html', {'account': account})
 
         if amount > 0:
             account.deposit(amount)
@@ -46,12 +53,17 @@ def deposit_view(request):
 
     return render(request, 'atm/deposit.html')
 
+
 @login_required
 def withdraw_view(request):
     account, _ = Account.objects.get_or_create(user=request.user)
 
     if request.method == 'POST':
-        amount = Decimal(request.POST.get('amount'))
+        try:
+            amount = Decimal(request.POST.get('amount'))
+        except (InvalidOperation, TypeError):
+            messages.error(request, "Invalid amount.")
+            return render(request, 'atm/withdraw.html', {'account': account})
 
         if amount > 0:
             if account.withdraw(amount):
@@ -70,6 +82,7 @@ def withdraw_view(request):
             messages.error(request, "Invalid amount.")
 
     return render(request, 'atm/withdraw.html')
+
 
 @login_required
 def transactions_view(request):
@@ -90,21 +103,25 @@ def register_view(request):
         password = request.POST.get('password')
         confirm = request.POST.get('confirm')
 
-
         if not username or not password or not confirm:
             messages.error(request, "All fields are required")
             return render(request, 'atm/register.html', {'username': username})
 
-     
         if password != confirm:
             messages.error(request, "Passwords do not match")
             return render(request, 'atm/register.html', {'username': username})
 
-     
         if User.objects.filter(username=username).exists():
             messages.error(request, "Username already exists")
             return render(request, 'atm/register.html', {'username': username})
 
+        try:
+            validate_password(password)
+        except ValidationError as e:
+            # show each validation error to the user
+            for err in getattr(e, 'messages', [str(e)]):
+                messages.error(request, err)
+            return render(request, 'atm/register.html', {'username': username})
 
         user = User.objects.create_user(username=username, password=password)
         messages.success(request, "Account created successfully! Please login.")
